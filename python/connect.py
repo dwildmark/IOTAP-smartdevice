@@ -60,7 +60,13 @@ except Exception as e:
 
 def execute_move(move):
     #TODO:Print to serial device
-    ser.write('A')
+    ser.write('D')
+    msg = ser.readline()
+    distance = msg.split(':')[1]
+    print distance
+    if int(distance) < 40:
+        print "yes"
+        ser.write('A')
 
 
 # Connect and configuration the application
@@ -101,7 +107,7 @@ while True:
     data = { 'd': {'hello': 'world', 'mac': 6}}
 
     def myOnPublishCallback():
-        print("Confirmed event %s received by IoTF\n" % 6)
+        print("Confirmed event received by IoTF\n")
         
     success = deviceCli.publishEvent("greeting", "json", data, qos=0, on_publish=myOnPublishCallback)
     if not success:

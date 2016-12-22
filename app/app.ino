@@ -50,7 +50,7 @@ void detect_dist(long *dist, int trigPin, int echoPin) {
 //Method called from other device...
 void flash_light(){
   digitalWrite(LED_PIN, HIGH);
-  delay(5000);
+  delay(1000);
   digitalWrite(LED_PIN, LOW);
 }
 
