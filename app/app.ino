@@ -16,11 +16,23 @@ void loop() {
     line[i] = Serial.read();
     i++;
   }
-  if (i > 0 && line[0] == 'D') {
-    long distance = 0;
-    detect_dist(&distance, TRIG_PIN, ECHO_PIN);
-    String res = "D:" + String(distance);
-    Serial.println(res);
+  if (i > 0 ) {
+    switch(line[0])
+    {
+    case 'D':
+      {
+        long distance = 0;
+        detect_dist(&distance, TRIG_PIN, ECHO_PIN);
+        String res = "D:" + String(distance);
+        Serial.println(res);
+        break;
+      }
+    case 'A':
+      flash_light();
+      break;
+    default:
+      break;
+    }
   }
 }
 
@@ -36,7 +48,7 @@ void detect_dist(long *dist, int trigPin, int echoPin) {
 }
 
 //Method called from other device...
-void targeted_unit(){
+void flash_light(){
   digitalWrite(LED_PIN, HIGH);
   delay(5000);
   digitalWrite(LED_PIN, LOW);

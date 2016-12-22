@@ -14,6 +14,9 @@ import time
 import sys
 import pprint
 import uuid
+import serial
+
+ser = serial.Serial('/dev/tty.usbmodem1411', 9600)
 
 try:
     import ibmiotf.application
@@ -54,6 +57,12 @@ except Exception as e:
     print(str(e))
     sys.exit()
 
+
+def execute_move(move):
+    #TODO:Print to serial device
+    ser.write('A')
+
+
 # Connect and configuration the application
 # - subscribe to live data from the device we created, specifically to "greeting" events
 # - use the myAppEventCallback method to process events
@@ -74,12 +83,13 @@ except Exception as e:
 #deviceCli.connect()
 def myCommandCallback(cmd):
     print("Command received: %s" % cmd.data)
-    if cmd.command == "setInterval":
-        if 'interval' not in cmd.data:
-            print("Error - command is missing required information: 'interval'")
+
+    if cmd.command == "execute":
+        if 'move' not in cmd.data:
+            print("Error - command is missing 'move' information")
         else:
-            interval = cmd.data['interval']
-    elif cmd.command == "print":
+            execute_move(cmd.data['move'])
+    elif cmd.command == "user":
         if 'message' not in cmd.data:
             print("Error - command is missing required information: 'message'")
         else:
@@ -88,5 +98,13 @@ deviceCli.connect()
 deviceCli.commandCallback = myCommandCallback
 
 while True:
+    data = { 'd': {'hello': 'world', 'mac': 6}}
+
+    def myOnPublishCallback():
+        print("Confirmed event %s received by IoTF\n" % 6)
+        
+    success = deviceCli.publishEvent("greeting", "json", data, qos=0, on_publish=myOnPublishCallback)
+    if not success:
+        print("Not connected to IoTF")
     time.sleep(5)
 # Disconnect the device and application from the cloud
