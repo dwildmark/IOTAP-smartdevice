@@ -65,10 +65,12 @@ def execute_move(move):
     distance = msg.split(':')[1]
     print distance
     if int(distance) < 40:
-        print "yes"
-        ser.write('A')
-
-
+        if move == 'UP':
+            ser.write('A')
+        elif move == 'RIGHT':
+            ser.write('B')
+        elif move == 'LEFT':
+            ser.write('C')
 # Connect and configuration the application
 # - subscribe to live data from the device we created, specifically to "greeting" events
 # - use the myAppEventCallback method to process events
